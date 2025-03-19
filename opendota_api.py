@@ -32,6 +32,7 @@ def getMatchStats(player_id, match_id):
                     "kills": player["kills"],
                     "deaths": player["deaths"],
                     "assists": player["assists"],
+                    "net_worth": player["net_worth"],
                     "gold_per_min": player["gold_per_min"],
                     "xp_per_min": player["xp_per_min"],
                     "hero_damage": player["hero_damage"],
@@ -47,3 +48,32 @@ def saveStatsToJSON(stats, filename="game_statistics.json"):
     with open(filename, "w", encoding="utf-8") as file:
         json.dump(stats, file, indent=4, ensure_ascii=False)
     print(f"Statistics saved to {filename}")
+
+
+def getHeroInfo(hero_id):
+    url = "https://api.opendota.com/api/heroes"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        heroes = response.json()
+        for hero in heroes:
+            if hero["id"] == hero_id:
+                hero_name = hero["localized_name"]
+                hero_image_url = f"https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/{hero['name'].replace('npc_dota_hero_', '')}.png"
+                return hero_name, hero_image_url
+
+def getRankImage(player_id):
+    ranks = ["Herald", "Guardian", "Crusader", "Archon", "Legend", "Ancient", "Divine", "Immortal"]
+
+    url = f"https://api.opendota.com/api/players/{player_id}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        player_data = response.json()
+        rank_tier_medal = player_data["rank_tier"]//10
+        rank_tier_star = player_data["rank_tier"]%10
+
+    rank_tier_name = ranks[rank_tier_medal-1]
+    
+    url_rank = f"https://courier.spectral.gg/images/dota/ranks/rank{rank_tier_medal}.png"
+    return rank_tier_name, rank_tier_star, url_rank
