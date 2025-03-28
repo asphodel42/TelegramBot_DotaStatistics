@@ -1,5 +1,4 @@
-import requests
-import json
+import requests, json
 
 BASE_URL = "https://api.opendota.com/api"
 
@@ -45,9 +44,17 @@ def getMatchStats(player_id, match_id):
 
 def saveStatsToJSON(stats, filename="game_statistics.json"):
     """Зберігає статистику у JSON-файл."""
-    with open(filename, "w", encoding="utf-8") as file:
-        json.dump(stats, file, indent=4, ensure_ascii=False)
-    print(f"Statistics saved to {filename}")
+    try: 
+        with open(filename, "w", encoding="utf-8") as file:
+            json.dump(stats, file, indent=4, ensure_ascii=False)
+        print(f"Statistics saved to {filename}")
+    except Exception as e:
+        print(f"Error saving statistics: {e}")
+    try:
+        with open("last_match_id.txt", "w", encoding="utf-8") as file:
+            file.write(str(stats["match_id"]))
+    except Exception as e:
+        print(f"Error saving last match ID: {e}")
 
 
 def getHeroInfo(hero_id):

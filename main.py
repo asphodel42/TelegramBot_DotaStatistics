@@ -1,6 +1,4 @@
-import os
-import json
-import asyncio
+import os, json, asyncio
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import Message, ChatMemberUpdated
@@ -51,7 +49,13 @@ async def on_chat_member_update(update: ChatMemberUpdated):
 
 async def check_matches():
     """Check new matches and send updates in every active chat"""
-    last_match_id = None
+    try:
+        with open("last_match_id.txt", "r", encoding="utf-8") as file:
+            last_match_id = int(file.read().strip())
+    except FileNotFoundError:
+        last_match_id = None
+    except Exception as e:
+        print(f"Error reading last match ID: {e}")
     
     while True:
         try:
