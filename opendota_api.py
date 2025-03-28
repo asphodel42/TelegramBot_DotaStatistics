@@ -1,6 +1,13 @@
-import requests, json
+import requests, json, datetime
 
 BASE_URL = "https://api.opendota.com/api"
+LOG_FILE = "bot_log.txt"
+
+# Function to write logs
+def log_message(message):
+    with open(LOG_FILE, "a", encoding="utf-8") as log_file:
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log_file.write("[" + current_time + "]\n" +message + "\n")
 
 def getLastMatchId(player_id):
     url = f"{BASE_URL}/players/{player_id}/recentMatches"
@@ -38,7 +45,7 @@ def getMatchStats(player_id, match_id):
                     "hero_healing": player["hero_healing"],
                     "tower_damage": player["tower_damage"],
                 }
-        print("Player not found")
+        log_message("Player not found")
     return None
 
 
@@ -47,14 +54,14 @@ def saveStatsToJSON(stats, filename="game_statistics.json"):
     try: 
         with open(filename, "w", encoding="utf-8") as file:
             json.dump(stats, file, indent=4, ensure_ascii=False)
-        print(f"Statistics saved to {filename}")
+        log_message(f"Statistics saved to {filename}")
     except Exception as e:
-        print(f"Error saving statistics: {e}")
+        log_message(f"Error saving statistics: {e}")
     try:
         with open("last_match_id.txt", "w", encoding="utf-8") as file:
             file.write(str(stats["match_id"]))
     except Exception as e:
-        print(f"Error saving last match ID: {e}")
+        log_message(f"Error saving last match ID: {e}")
 
 
 def getHeroInfo(hero_id):

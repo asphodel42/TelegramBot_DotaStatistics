@@ -4,7 +4,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.types import Message, ChatMemberUpdated
 from aiogram.filters import Command
 
-from opendota_api import getLastMatchId, getMatchStats, saveStatsToJSON, getHeroInfo, getRankImage
+from opendota_api import getLastMatchId, getMatchStats, saveStatsToJSON, getHeroInfo, getRankImage, log_message
 
 # Load environment variables
 load_dotenv()
@@ -44,18 +44,18 @@ async def on_chat_member_update(update: ChatMemberUpdated):
         active_chats.add(chat_id)  # Adding chat to set
         save_chats()  # Update file
 
-        print(f"Bot added to chat {chat_id}")
+        log_message(f"Bot added to chat {chat_id}")
         await bot.send_message(chat_id, "ЛУПИ ИХ ЛЕХА💪🏻😈🤙🏻 МЕСИ ИХ ЛЕХА💪🏻😈🤙🏻ЛОМАЙ ИХ ЛЕХА👿🤜🏻💀🤛🏻🤬 ГАСИ ИХ ЛЕХА💪🏻😈🤙🏻 ГНОБИ ИХ ЛЕХА👊🏻😼👊🏻ТОПЧИ ИХ ЛЕХА👊🏻🤬👊🏻ДАВИ ИХ ЛЕХА😾🤜🏻🐷🤛🏻😤РУБИ ИХ ЛЕХА👊🏻😎🤙🏻ЕБИ ИХ ЛЕХА")
 
 async def check_matches():
     """Check new matches and send updates in every active chat"""
     try:
         with open("last_match_id.txt", "r", encoding="utf-8") as file:
-            last_match_id = int(file.read().strip())
-    except FileNotFoundError:
-        last_match_id = None
+            file_content = file.read().strip()
+            last_match_id = None if file_content == "" else int(file_content)
     except Exception as e:
-        print(f"Error reading last match ID: {e}")
+        last_match_id = None
+        log_message(f"Error reading last match ID: {e}")
     
     while True:
         try:
@@ -86,12 +86,12 @@ async def check_matches():
                         photo=hero_image,
                         caption=message)
 
-                print(f"\33[32mNew match {match_id} detected and sended to chats.\33[0m")
+                log_message(f"New match {match_id} detected and sent to chats.")
             else:
-                print("No new match yet, checking again...")
+                log_message("No new match yet, checking again...")
 
         except Exception as e:
-            print(f"\33[31mError: {e}\33[0m")
+            log_message(f"Error: {e}")
 
         await asyncio.sleep(30*60)
 
