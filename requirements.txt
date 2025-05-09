@@ -1,0 +1,7 @@
+aiogram
+cloudscraper
+beautifulsoup4
+requests
+re
+json
+asyncio
