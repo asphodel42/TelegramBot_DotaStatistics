@@ -4,6 +4,9 @@
 
 A Telegram bot that automatically tracks and posts statistics from a Dota 2 player's most recent matches using the OpenDota API.
 
+## Example of a message
+![зображення](https://github.com/user-attachments/assets/1aa2e1c8-7541-47f7-be32-bd908a15558d)
+
 ## Features
 
 - Automatically checks for new Dota 2 matches every 30 minutes
