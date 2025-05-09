@@ -1,7 +1,6 @@
 __pycache__/
 .env
 game_statistics.json
-requirements.txt
 chats.json
 last_match_id.txt
 bot_log.txt

@@ -1,9 +1,10 @@
-import os, json, asyncio
+import os
+import json
+import asyncio
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import Message, ChatMemberUpdated
 from aiogram.filters import Command
-
 from opendota_api import getLastMatchId, getMatchStats, saveStatsToJSON, getHeroInfo, getRankImage, log_message
 
 # Load environment variables
@@ -16,10 +17,12 @@ PLAYER_ID = int(os.getenv("PLAYER_ID"))
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
-#File for saving chat_id
+# File for saving chat_id
 CHAT_FILE = "chats.json"
 
 # Loading saved chats
+
+
 def load_chats():
     if os.path.exists(CHAT_FILE):
         with open(CHAT_FILE, "r") as file:
@@ -27,12 +30,15 @@ def load_chats():
     return set()
 
 # Saving chats to file
+
+
 def save_chats():
     with open(CHAT_FILE, "w") as file:
         json.dump(list(active_chats), file)
 
 
 active_chats = load_chats()
+
 
 @dp.my_chat_member()
 async def on_chat_member_update(update: ChatMemberUpdated):
@@ -47,6 +53,7 @@ async def on_chat_member_update(update: ChatMemberUpdated):
         log_message(f"Bot added to chat {chat_id}")
         await bot.send_message(chat_id, "ЛУПИ ИХ ЛЕХА💪🏻😈🤙🏻 МЕСИ ИХ ЛЕХА💪🏻😈🤙🏻ЛОМАЙ ИХ ЛЕХА👿🤜🏻💀🤛🏻🤬 ГАСИ ИХ ЛЕХА💪🏻😈🤙🏻 ГНОБИ ИХ ЛЕХА👊🏻😼👊🏻ТОПЧИ ИХ ЛЕХА👊🏻🤬👊🏻ДАВИ ИХ ЛЕХА😾🤜🏻🐷🤛🏻😤РУБИ ИХ ЛЕХА👊🏻😎🤙🏻ЕБИ ИХ ЛЕХА")
 
+
 async def check_matches():
     """Check new matches and send updates in every active chat"""
     try:
@@ -56,7 +63,7 @@ async def check_matches():
     except Exception as e:
         last_match_id = None
         log_message(f"Error reading last match ID: {e}")
-    
+
     while True:
         try:
             match_id = getLastMatchId(PLAYER_ID)
@@ -86,7 +93,8 @@ async def check_matches():
                         photo=hero_image,
                         caption=message)
 
-                log_message(f"New match {match_id} detected and sent to chats.")
+                log_message(
+                    f"New match {match_id} detected and sent to chats.")
             else:
                 log_message("No new match yet, checking again...")
 
@@ -95,6 +103,7 @@ async def check_matches():
 
         await asyncio.sleep(30*60)
 
+
 @dp.message(Command('start'))
 async def start_command(message: Message):
     """Handler for /start"""
@@ -102,10 +111,12 @@ async def start_command(message: Message):
     save_chats()  # Update file
     await message.answer("Бот активований! \nЦіль: відправляти статистику. \nРеакція Олексія: видалити бота після 0-15 з міду. 😶‍🌫️")
 
+
 @dp.message(Command('cheer'))
 async def cheer_command(message: Message):
     """Handler for /cheer"""
     await message.answer("ЛУПИ ИХ ЛЕХА💪🏻😈🤙🏻 МЕСИ ИХ ЛЕХА💪🏻😈🤙🏻ЛОМАЙ ИХ ЛЕХА👿🤜🏻💀🤛🏻🤬 ГАСИ ИХ ЛЕХА💪🏻😈🤙🏻 ГНОБИ ИХ ЛЕХА👊🏻😼👊🏻ТОПЧИ ИХ ЛЕХА👊🏻🤬👊🏻ДАВИ ИХ ЛЕХА😾🤜🏻🐷🤛🏻😤РУБИ ИХ ЛЕХА👊🏻😎🤙🏻ЕБИ ИХ ЛЕХА")
+
 
 @dp.message(Command('rank'))
 async def rank_command(message: Message):

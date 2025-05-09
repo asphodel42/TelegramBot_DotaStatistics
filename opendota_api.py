@@ -1,13 +1,18 @@
-import requests, json, datetime
+import requests
+import json
+import datetime
 
 BASE_URL = "https://api.opendota.com/api"
 LOG_FILE = "bot_log.txt"
 
 # Function to write logs
+
+
 def log_message(message):
     with open(LOG_FILE, "a", encoding="utf-8") as log_file:
         current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        log_file.write("[" + current_time + "]\n" +message + "\n")
+        log_file.write("[" + current_time + "]\n" + message + "\n")
+
 
 def getLastMatchId(player_id):
     url = f"{BASE_URL}/players/{player_id}/recentMatches"
@@ -17,6 +22,7 @@ def getLastMatchId(player_id):
         if data:
             return data[0]["match_id"]
     return None
+
 
 def getMatchStats(player_id, match_id):
     url = f"{BASE_URL}/matches/{match_id}"
@@ -51,7 +57,7 @@ def getMatchStats(player_id, match_id):
 
 def saveStatsToJSON(stats, filename="game_statistics.json"):
     """Зберігає статистику у JSON-файл."""
-    try: 
+    try:
         with open(filename, "w", encoding="utf-8") as file:
             json.dump(stats, file, indent=4, ensure_ascii=False)
         log_message(f"Statistics saved to {filename}")
@@ -76,8 +82,10 @@ def getHeroInfo(hero_id):
                 hero_image_url = f"https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/{hero['name'].replace('npc_dota_hero_', '')}.png"
                 return hero_name, hero_image_url
 
+
 def getRankImage(player_id):
-    ranks = ["Herald", "Guardian", "Crusader", "Archon", "Legend", "Ancient", "Divine", "Immortal"]
+    ranks = ["Herald", "Guardian", "Crusader", "Archon",
+             "Legend", "Ancient", "Divine", "Immortal"]
 
     url = f"https://api.opendota.com/api/players/{player_id}"
     response = requests.get(url)
@@ -85,9 +93,9 @@ def getRankImage(player_id):
     if response.status_code == 200:
         player_data = response.json()
         rank_tier_medal = player_data["rank_tier"]//10
-        rank_tier_star = player_data["rank_tier"]%10
+        rank_tier_star = player_data["rank_tier"] % 10
 
     rank_tier_name = ranks[rank_tier_medal-1]
-    
+
     url_rank = f"https://courier.spectral.gg/images/dota/ranks/rank{rank_tier_medal}.png"
     return rank_tier_name, rank_tier_star, url_rank
